@@ -117,7 +117,7 @@ function checkForCollisions() {
       ballCurrentPosition[0] > blocks[i].bottomLeft[0] &&
       ballCurrentPosition[0] < blocks[i].bottomRight[0] &&
       ballCurrentPosition[1] + ballDiameter > blocks[i].bottomLeft[1] &&
-      ballCurrentPosition[1] < blocks[1].topLeft[1]
+      ballCurrentPosition[1] < blocks[i].topLeft[1]
     ) {
       const allBlocks = Array.from(document.querySelectorAll(".block"));
       allBlocks[i].classList.remove("block");
@@ -125,8 +125,15 @@ function checkForCollisions() {
       changeDirection();
       score++;
       scoreDisplay.innerHTML = score;
+      //check for win
+      if (blocks.length == 0) {
+        scoreDisplay.innerHTML = "YOU WIN!";
+        clearInterval(timerID);
+        document.removeEventListener("keydown", moveUser);
+      }
     }
   }
+
   //check for wall collisions
   if (
     ballCurrentPosition[0] >= boardWidth - ballDiameter ||
@@ -135,10 +142,19 @@ function checkForCollisions() {
   ) {
     changeDirection();
   }
+  //check for user collisioins
+  if (
+    ballCurrentPosition[0] > currentPosition[0] &&
+    ballCurrentPosition[0] < currentPosition[0] + blockWidth &&
+    ballCurrentPosition[1] > currentPosition[1] &&
+    ballCurrentPosition[1] < currentPosition[1] + blockHeight
+  ) {
+    changeDirection();
+  }
   //check for game over
   if (ballCurrentPosition[1] <= 0) {
     clearInterval(timerID);
-    scoreDisplay.innerHTML = "You Lose";
+    scoreDisplay.innerHTML = "You Lose!";
     document.removeEventListener("keydown", moveUser);
   }
 }
